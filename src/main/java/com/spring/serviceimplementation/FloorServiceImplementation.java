@@ -13,8 +13,6 @@ import com.spring.entity.StudentEntity;
 import com.spring.entity.WardenEntity;
 import com.spring.exception.ResourceNotFoundException;
 import com.spring.payload.FloorDto;
-import com.spring.payload.RoomDto;
-import com.spring.payload.StudentDto;
 import com.spring.payload.WardenDto;
 import com.spring.repository.FloorRepository;
 import com.spring.repository.RoomRepository;

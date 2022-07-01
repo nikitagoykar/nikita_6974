@@ -1,15 +1,12 @@
 package com.spring.entity;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
@@ -26,19 +23,21 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class HostelEntity {
+public class AdminEntity {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int hostelId;
+	private int adminId;
 	
 	@Column(nullable = false)
-	@NotEmpty(message = "hostel name can not be empty")
+	@NotEmpty(message = "admin name can not be empty")
 	@Size(min = 4,max =25,message = "name size is in between min 4 to max 25")
-	private String hostelName;
-
+	private String adminName;
+	
+	@Column(name="password", length=60)
+    private String password;
+	
 	@OneToOne
-	private AdminEntity admin;
-
-	@OneToMany(cascade = CascadeType.ALL)
-	private List<WardenEntity>  warden = new ArrayList<WardenEntity>();
+	private HostelEntity hostel;
+	
 }
