@@ -11,7 +11,11 @@ public interface WardenService {
 	
 	public List<WardenDto> getAllWardens();
 	
+	public List<WardenDto> getWardenByHostelId(int hostelId);
+	
     public WardenDto updatedWardenById(WardenDto wardenDto,int wardenId);
     
     public void deleteWardenById(int wardenId);
+     
+    
 }

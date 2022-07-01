@@ -8,13 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.spring.entity.FloorEntity;
-import com.spring.entity.RoomEntity;
-import com.spring.entity.StudentEntity;
 import com.spring.entity.WardenEntity;
 import com.spring.exception.ResourceNotFoundException;
 import com.spring.payload.FloorDto;
-import com.spring.payload.RoomDto;
-import com.spring.payload.StudentDto;
 import com.spring.payload.WardenDto;
 import com.spring.repository.FloorRepository;
 import com.spring.repository.RoomRepository;
@@ -35,31 +31,25 @@ public class FloorServiceImplementation implements FloorService {
 
 	@Autowired
 	private RoomRepository roomRepository;
-	
-	
-	
+
 	@Autowired
 	private StudentRepository studentRepository;
+
 	@Override
 	public FloorDto createFloor(FloorDto floorDto, int wardenId) {
 		// TODO Auto-generated method stub
 		WardenEntity wardenEntity = this.wardenRepository.findById(wardenId)
 				.orElseThrow(() -> new ResourceNotFoundException("Warden", "WardenId", wardenId));
 
-		floorDto.setWarden(this.modelMapper.map(wardenEntity,WardenDto.class));
-		FloorEntity floorEntity = this.floorDtoToFloorEntity(floorDto);
-//	List<RoomEntity> roomEntity = this.roomRepository.findByFloor(floorEntity);
-//	List<RoomDto> roomDtoList =roomEntity.stream().map(rooms-> this.modelMapper.map(roomEntity,RoomDto.class)).collect(Collectors.toList());
-//		
-//		List<StudentEntity> studentEntityList  = this.studentRepository.findByFloor(floorEntity);
-//		List<StudentDto> studentDtoList =studentEntityList.stream().map(student-> this.modelMapper.map(student,StudentDto.class)).collect(Collectors.toList());
-	//	
-	//floorDto.setRoom(roomDtoList);
-		//floorDto.setStudent(studentDtoList);
-		//floorDto.setRoom(this.modelMapper.map(roomEntity,RoomDto.class));
+		floorDto.setWarden(this.modelMapper.map(wardenEntity, WardenDto.class));
+		FloorEntity saveFloor = this.floorRepository.save(this.modelMapper.map(floorDto, FloorEntity.class));
+		return this.modelMapper.map(saveFloor,FloorDto.class);
+//		FloorEntity floorEntity = this.floorDtoToFloorEntity(floorDto);
+//
+//		FloorEntity newFloorEntity = this.floorRepository.save(this.floorDtoToFloorEntity(floorDto));
+//		return this.floorEntityToFloorDto(newFloorEntity);
 		
-		FloorEntity newFloorEntity = this.floorRepository.save(this.floorDtoToFloorEntity(floorDto));
-		return this.floorEntityToFloorDto(newFloorEntity);
+		
 	}
 
 	@Override
@@ -80,9 +70,18 @@ public class FloorServiceImplementation implements FloorService {
 	}
 
 	@Override
+	public List<FloorDto> getAllFloorsByWardenId(int wardenId) {
+		// TODO Auto-generated method stub
+		List<FloorEntity> floor = this.floorRepository.getFloorEntityByWardenId(wardenId);
+		System.out.println("list of floor"+floor);
+		List<FloorDto> floorDto = floor.stream().map(floors -> this.modelMapper.map(floors, FloorDto.class)).collect(Collectors.toList());
+		return floorDto;
+	}
+	
+	@Override
 	public FloorDto updateFloorById(FloorDto floorDto, int floorId) {
 		// TODO Auto-generated method stub
-		FloorEntity floorEntity = this.floorRepository.findById(floorId)
+		 FloorEntity floorEntity = this.floorRepository.findById(floorId)
 				.orElseThrow(() -> new ResourceNotFoundException("Floor", "FloorId", floorId));
 		FloorEntity updateFloorEntity = this.floorRepository.save(this.floorDtoToFloorEntity(floorDto));
 		return this.floorEntityToFloorDto(updateFloorEntity);
@@ -103,5 +102,7 @@ public class FloorServiceImplementation implements FloorService {
 	public FloorDto floorEntityToFloorDto(FloorEntity floorEntity) {
 		return this.modelMapper.map(floorEntity, FloorDto.class);
 	}
+
+
 
 }

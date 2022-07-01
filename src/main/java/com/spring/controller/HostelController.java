@@ -26,34 +26,42 @@ public class HostelController {
 	private HostelService hostelService;
 
 	// add
-	@PostMapping("/hostel")
-	ResponseEntity<HostelDto> createHostel(@RequestBody HostelDto hostelDto) {
-		HostelDto createdHostel = this.hostelService.createHostel(hostelDto);
+	@PostMapping("/hostel/{adminId}")
+	ResponseEntity<HostelDto> createHostel(@PathVariable int adminId,@RequestBody HostelDto hostelDto) {
+		HostelDto createdHostel = this.hostelService.createHostel(hostelDto,adminId);
 		return new ResponseEntity<HostelDto>(createdHostel, HttpStatus.CREATED);
 	}
 
-	// getHostelById
+	// fetch hostel by HostelById
 	@GetMapping("/hostel/{hostelId}")
 	ResponseEntity<HostelDto> createHostel(@PathVariable int hostelId) {
 		HostelDto recivedHostel = this.hostelService.getHostelById(hostelId);
 		return new ResponseEntity<HostelDto>(recivedHostel, HttpStatus.OK);
 	}
 
-	// getAllHostel
+	// fetch all hostel records byAllHostel
 	@GetMapping("/hostel")
 	ResponseEntity<List<HostelDto>> createHostel() {
 		List<HostelDto> recivedAllHostels = this.hostelService.getAllHostels();
 		return new ResponseEntity<List<HostelDto>>(recivedAllHostels, HttpStatus.OK);
 	}
+	
+	//fetch  all hostel by adminId
+	@GetMapping("/hostels/{adminId}")
+	ResponseEntity <List<HostelDto>> getAllHostelsByAdminId(@PathVariable int adminId)
+	{
+		List<HostelDto> getAdmin = this.hostelService.getAllHostelsByAdminId(adminId);
+		return new ResponseEntity<List<HostelDto>>(getAdmin,HttpStatus.OK);
+	}
 
-	// updateHostelById
+	// update hostel  by HostelById
 	@PutMapping("/hostel/{hostelId}")
 	ResponseEntity<HostelDto> updateHostelById(@RequestBody HostelDto hostelDto, @PathVariable int hostelId) {
 		HostelDto updatedHostel = this.hostelService.updateHostelById(hostelDto, hostelId);
 		return new ResponseEntity<HostelDto>(updatedHostel, HttpStatus.OK);
 	}
 	
-	//delete hostel by id
+	//delete hostel by hostelId
 	@DeleteMapping("/hostel/{hostelId}")
 	ResponseEntity<ApiResponce>deleteHostel(@PathVariable int hostelId)
 	{
@@ -63,5 +71,7 @@ public class HostelController {
 		responce.setSucess(true);
 		return new ResponseEntity<ApiResponce>(responce,HttpStatus.OK);
 	}
+	
+
 	}
 

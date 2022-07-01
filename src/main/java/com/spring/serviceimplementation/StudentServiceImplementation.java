@@ -23,6 +23,8 @@ import com.spring.repository.StudentRepository;
 import com.spring.repository.WardenRepository;
 import com.spring.service.StudentService;
 
+import net.bytebuddy.asm.Advice.This;
+
 @Service
 public class StudentServiceImplementation implements StudentService {
 
@@ -54,15 +56,12 @@ public class StudentServiceImplementation implements StudentService {
 		RoomEntity roomEntity = this.roomRepository.findById(roomId)
 				.orElseThrow(() -> new ResourceNotFoundException("Room", "RoomId", roomId));
 
-		roomEntity.getStudent().add(this.modelMapper.map(studentDto,StudentEntity.class));
-	wardenEntity.getStudent().add(this.modelMapper.map(studentDto,StudentEntity.class));
-floorEntity.getStudent().add(this.modelMapper.map(studentDto,StudentEntity.class));
-	
 		studentDto.setWarden(this.modelMapper.map(wardenEntity, WardenDto.class));
 		studentDto.setFloor(this.modelMapper.map(floorEntity, FloorDto.class));
-	studentDto.setRoom(this.modelMapper.map(roomEntity, RoomDto.class));
-	StudentEntity studentEntity = this.studentRepository.save(this.studentDtoToStudentEntity(studentDto));
-		return this.studentEntityToStudentDto(studentEntity);
+		studentDto.setRoom(this.modelMapper.map(roomEntity, RoomDto.class));
+
+		StudentEntity saveStudent = this.studentRepository.save(this.modelMapper.map(studentDto, StudentEntity.class));
+		return this.modelMapper.map(saveStudent, StudentDto.class);
 	}
 
 	@Override
@@ -108,6 +107,34 @@ floorEntity.getStudent().add(this.modelMapper.map(studentDto,StudentEntity.class
 
 	public StudentDto studentEntityToStudentDto(StudentEntity studentEntity) {
 		return this.modelMapper.map(studentEntity, StudentDto.class);
+	}
+
+	@Override
+	public List<StudentDto> getAllStudentsBywardenId(int wardenId) {
+		// TODO Auto-generated method stub
+		List<StudentEntity> student = this.studentRepository.getStudentEntityByWardenId(wardenId);
+		List<StudentDto> studentDto = student.stream().map(students -> this.modelMapper.map(students, StudentDto.class))
+				.collect(Collectors.toList());
+		return studentDto;
+
+	}
+
+	@Override
+	public List<StudentDto> getAllStudentsByFloorId(int floorId) {
+		// TODO Auto-generated method stub
+		List<StudentEntity> studentEntities = this.studentRepository.getStudentEntityByFloorlId(floorId);
+		List<StudentDto> studentDto = studentEntities.stream()
+				.map(students -> this.modelMapper.map(students, StudentDto.class)).collect(Collectors.toList());
+		return studentDto;
+	}
+
+	@Override
+	public List<StudentDto> getAllStudentsByRoomId(int roomId) {
+		// TODO Auto-generated method stub
+		List<StudentEntity> students = this.studentRepository.getStudentEntityByRoomId(roomId);
+		List<StudentDto> studentDtos = students.stream().map(student -> this.modelMapper.map(student, StudentDto.class))
+				.collect(Collectors.toList());
+		return studentDtos;
 	}
 
 }

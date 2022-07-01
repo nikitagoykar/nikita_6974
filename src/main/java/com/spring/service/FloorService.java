@@ -15,4 +15,6 @@ public interface FloorService {
 	public FloorDto updateFloorById(FloorDto floorDto,int floorId);
 	
 	public void deleteFloorById(int floorId);
+	
+	public  List<FloorDto>  getAllFloorsByWardenId(int wardenId);
 }

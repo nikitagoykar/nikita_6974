@@ -14,5 +14,10 @@ public interface StudentService {
 	public StudentDto updateStudentById(StudentDto studentDto,int studentId);
 	
 	public void deleteStudentById(int studentId);
+	
+	public List<StudentDto> getAllStudentsBywardenId(int wardenId);
 
+	public List<StudentDto> getAllStudentsByFloorId(int floorId);
+	
+	public List<StudentDto> getAllStudentsByRoomId(int roomId);
 }

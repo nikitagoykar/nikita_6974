@@ -7,7 +7,7 @@ import com.spring.payload.HostelDto;
 public interface HostelService {
 	
 	//create hostel
-	public HostelDto createHostel(HostelDto hostelDto);
+	public HostelDto createHostel(HostelDto hostelDto,int adminId);
 	
 	//get all hostel
 	public List<HostelDto> getAllHostels();
@@ -20,6 +20,8 @@ public interface HostelService {
 	
 	//delete hostel by id
 	public void deleteHostelById(int hostelId);
+	
+	public List<HostelDto> getAllHostelsByAdminId(int adminId);
 	
 
 }

@@ -25,6 +25,7 @@ public class RoomController {
 	@Autowired
 	private RoomService roomService;
 	
+	//add room
 	@PostMapping("/floor/{floorId}/room")
 	private ResponseEntity<RoomDto> createRoom(@PathVariable int floorId,@RequestBody RoomDto roomDto)
 	{
@@ -33,6 +34,7 @@ public class RoomController {
 		return new ResponseEntity<RoomDto>(createdRoomDto,HttpStatus.CREATED);
 	}
 
+	//Fetch room record by roomId
 	@GetMapping("/room/{roomId}")
 	private ResponseEntity<RoomDto> getRoomById(@PathVariable int roomId)
 	{
@@ -40,7 +42,7 @@ public class RoomController {
 		return new ResponseEntity<RoomDto>(getRoom,HttpStatus.OK);
 		
 	}
-	
+	//Fetch room record by roomId
 	@GetMapping("/room")
 	ResponseEntity<List<RoomDto>> createRoom()
 	{
@@ -48,6 +50,7 @@ public class RoomController {
 	return new ResponseEntity<List<RoomDto>>(recivedAllRooms,HttpStatus.OK);	
 	}
 	
+	//update room record by roomId
 	@PutMapping("/room/{roomId}")
 	ResponseEntity<RoomDto> updateRoomById(@RequestBody RoomDto roomDto,@PathVariable int roomId)
 	{
@@ -55,6 +58,7 @@ public class RoomController {
 		return new ResponseEntity<RoomDto>(updateRoom,HttpStatus.OK);
 	}
 	
+	//delete room record by roomId
 	@DeleteMapping("/room/{roomId}")
 	ResponseEntity<ApiResponce> deleteRoom(@PathVariable int roomId)
 	{
@@ -66,6 +70,8 @@ public class RoomController {
 		
 		return new ResponseEntity<ApiResponce>(responce,HttpStatus.OK);
 	}
+	
+	//Fetch room record by floorId
 	@GetMapping("/room1/{floorId}")
 	ResponseEntity  <List<RoomDto>> getAllRoomsByFloorId(@PathVariable int floorId)
 	{

@@ -1,13 +1,10 @@
 package com.spring.serviceimplementation;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.hibernate.engine.jdbc.spi.JdbcCoordinator;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.spring.entity.FloorEntity;
@@ -17,7 +14,6 @@ import com.spring.payload.FloorDto;
 import com.spring.payload.RoomDto;
 import com.spring.repository.FloorRepository;
 import com.spring.repository.RoomRepository;
-import com.spring.repository.WardenRepository;
 import com.spring.service.RoomService;
 
 @Service
@@ -43,11 +39,10 @@ public class RoomServiceImplementation implements RoomService {
 		System.out.println("Floor name-------"+floorEntity.getFloorName());
 		System.out.println("List of Rooms----"+floorEntity.getRoom());
 		System.out.println("Warden Id-----"+floorEntity.getWarden());
-		roomDto.setFloor(this.modelMapper.map(floorEntity, FloorDto.class));
 		
-
-		RoomEntity roomEntity = this.roomRepository.save(this.roomDtoToRoomEntity(roomDto));
-		return this.roomEntityToRoomDto(roomEntity);
+		roomDto.setFloor(this.modelMapper.map(floorEntity, FloorDto.class));      
+		RoomEntity saveRoom= this.roomRepository.save(this.modelMapper.map(roomDto, RoomEntity.class));
+		return this.modelMapper.map(saveRoom,RoomDto.class);
 	}
 
 	@Override
@@ -61,7 +56,8 @@ public class RoomServiceImplementation implements RoomService {
 	@Override
 	public List<RoomDto> getAllRooms() {
 		// TODO Auto-generated method stub
-		List<RoomDto> getAllRooms = this.roomRepository.findAll().stream().map(room -> this.roomEntityToRoomDto(room))
+		List<RoomEntity> roomList= this.roomRepository.findAll();
+		List<RoomDto> getAllRooms = roomList.stream().map(room -> this.modelMapper.map(room,RoomDto.class))
 				.collect(Collectors.toList());
 		return getAllRooms;
 	}
@@ -71,8 +67,9 @@ public class RoomServiceImplementation implements RoomService {
 		// TODO Auto-generated method stub
 		RoomEntity roomEntity = this.roomRepository.findById(roomId)
 				.orElseThrow(() -> new ResourceNotFoundException("Room", "RoomId", roomId));
-		RoomEntity updatedRoomEntity = this.roomRepository.save(this.roomDtoToRoomEntity(roomDto));
-		return this.roomEntityToRoomDto(updatedRoomEntity);
+//		RoomEntity updatedRoomEntity = this.roomRepository.save(this.roomDtoToRoomEntity(roomDto));
+//		return this.roomEntityToRoomDto(updatedRoomEntity);
+		return this.modelMapper.map(roomEntity, RoomDto.class);
 	}
 
 	@Override
@@ -83,13 +80,6 @@ public class RoomServiceImplementation implements RoomService {
 		this.roomRepository.delete(roomEntity);
 	}
 
-	public RoomEntity roomDtoToRoomEntity(RoomDto roomDto) {
-		return this.modelMapper.map(roomDto, RoomEntity.class);
-	}
-
-	public RoomDto roomEntityToRoomDto(RoomEntity roomEntity) {
-		return this.modelMapper.map(roomEntity, RoomDto.class);
-	}
 
 	@Override
 	public List<RoomDto> getAllRoomsByFloorId(int floorId)
@@ -102,6 +92,14 @@ public class RoomServiceImplementation implements RoomService {
 		List<RoomDto> roomDtoList = rooms.stream().map(room ->this.modelMapper.map(room,RoomDto.class)).collect(Collectors.toList());
            return roomDtoList;
 	
+	}
+
+	public RoomEntity roomDtoToRoomEntity(RoomDto roomDto) {
+		return this.modelMapper.map(roomDto, RoomEntity.class);
+	}
+
+	public RoomDto roomEntityToRoomDto(RoomEntity roomEntity) {
+		return this.modelMapper.map(roomEntity, RoomDto.class);
 	}
 
 }

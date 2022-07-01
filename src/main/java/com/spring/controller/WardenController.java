@@ -25,6 +25,7 @@ public class WardenController {
 	@Autowired
 	private WardenService wardenService;
 	
+	//add warden record by wardenId
 	@PostMapping("/hostel/{hostelId}/warden")
 	private ResponseEntity<WardenDto> createWarden(@PathVariable int hostelId,@RequestBody WardenDto wardenDto)
 	{
@@ -32,13 +33,14 @@ public class WardenController {
 		return new ResponseEntity<WardenDto>(createdWardenDto,HttpStatus.CREATED);
 	}
 	
+	///fetch warden record by wardenId
 	@GetMapping("/warden/{wardenId}")
 	private ResponseEntity<WardenDto> getWardenById(@PathVariable int wardenId)
 	{
 		WardenDto getWarden = this.wardenService.getWardenById(wardenId);
 		return new ResponseEntity<WardenDto>(getWarden,HttpStatus.OK);
 	}
-	
+	//fetch all warden record
 	@GetMapping("/warden")
 	ResponseEntity<List<WardenDto>> createWarden()
 	{
@@ -46,6 +48,15 @@ public class WardenController {
 		return new ResponseEntity<List<WardenDto>>(recivedAllWardens,HttpStatus.OK);
 	}
 	
+	//fetech all wardens by hostel id
+	@GetMapping("wardens/{hostelId}")
+	ResponseEntity<List<WardenDto>> getwardenbyhostelId(@PathVariable int hostelId)
+	{
+		List<WardenDto> getHostel = this.wardenService.getWardenByHostelId(hostelId);
+		return new ResponseEntity<List<WardenDto>>(getHostel,HttpStatus.OK);
+	}
+	
+	//update warden record by wardenId
 	@PutMapping("/warden/{wardenId}")
 	ResponseEntity<WardenDto> updateWardenById(@RequestBody WardenDto wardenDto,@PathVariable int wardenId)
 	{
@@ -53,6 +64,7 @@ public class WardenController {
 		return new ResponseEntity<WardenDto>(updatedWarden,HttpStatus.OK);
 	}
 	
+	//delete warden record by wardenId
 	@DeleteMapping("/warden/{wardenId}")
 	ResponseEntity<ApiResponce> deleteWarden(@PathVariable int wardenId)
 	{

@@ -8,10 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.spring.entity.HostelEntity;
-import com.spring.entity.StudentEntity;
 import com.spring.entity.WardenEntity;
 import com.spring.exception.ResourceNotFoundException;
-import com.spring.payload.StudentDto;
+import com.spring.payload.HostelDto;
 import com.spring.payload.WardenDto;
 import com.spring.repository.HostelRepository;
 import com.spring.repository.StudentRepository;
@@ -38,21 +37,15 @@ public class WardenServiceImplementation implements WardenService {
 		HostelEntity hostelEntity = this.hostelRepository.findById(hostelId)
 				.orElseThrow(() -> new ResourceNotFoundException("Hostel", "HostelId", hostelId));
 
-		WardenEntity wardernEntity = this.modelMapper.map(wardenDto, WardenEntity.class);
+//		WardenEntity wardernEntity = this.modelMapper.map(wardenDto, WardenEntity.class);
+//         WardenDto saveWarden = this.wardenRepository.save(war)
+		wardenDto.setHostel(this.modelMapper.map(hostelEntity,HostelDto.class));
+		
+		//hostelEntity.getWarden().add(wardernEntity);
+		//wardernEntity.setHostel(hostelEntity);
 
-		hostelEntity.getWarden().add(wardernEntity);
-		wardernEntity.setHostel(hostelEntity);
-
-		
-		
-		//StudentDto studentDto = this.modelMapper.map(studentEntity, StudentDto.class);
-
-		
-		
-		// WardenEntity savedWardenEntity  = this.wardenRepository.save(wardernEntity);
-		
-
-		return this.wardenEntityToWardenDto(this.wardenRepository.save(wardernEntity));
+		WardenEntity saveWarden = this.wardenRepository.save(this.modelMapper.map(wardenDto, WardenEntity.class));
+		return this.modelMapper.map(saveWarden,WardenDto.class);
 	}
 
 	@Override
@@ -67,8 +60,15 @@ public class WardenServiceImplementation implements WardenService {
 	public List<WardenDto> getAllWardens() {
 		// TODO Auto-generated method stub
 		List<WardenDto> getAllWardens = this.wardenRepository.findAll().stream()
-				.map(warden -> this.wardenEntityToWardenDto(warden)).collect(Collectors.toList());
+				.map(warden -> this.modelMapper.map(warden, WardenDto.class)).collect(Collectors.toList());
 		return getAllWardens;
+	}
+	@Override
+	public List<WardenDto> getWardenByHostelId(int hostelId) {
+		// TODO Auto-generated method stub
+		List<WardenEntity> warden = this.wardenRepository.getWardenEntityByhostelId(hostelId);
+		List<WardenDto> wardenDto = warden.stream().map(wardens -> this.modelMapper.map(wardens, WardenDto.class)).collect(Collectors.toList());
+		return wardenDto;
 	}
 
 	@Override
@@ -76,9 +76,10 @@ public class WardenServiceImplementation implements WardenService {
 		// TODO Auto-generated method stub
 		WardenEntity wardenEntity = this.wardenRepository.findById(wardenId)
 				.orElseThrow(() -> new ResourceNotFoundException("Warden", "WardenId", wardenId));
-		WardenEntity updatedWardenEntity = this.wardenRepository.save(this.wardenDtoToWardenEntity(wardenDto));
+		WardenEntity updatedWardenEntity = this.modelMapper.map(wardenDto, WardenEntity.class);
 
-		return this.wardenEntityToWardenDto(updatedWardenEntity);
+		WardenEntity saveWarden = this.wardenRepository.save(updatedWardenEntity);
+		return this.modelMapper.map(saveWarden, WardenDto.class);
 	}
 
 	@Override
@@ -97,5 +98,7 @@ public class WardenServiceImplementation implements WardenService {
 	public WardenDto wardenEntityToWardenDto(WardenEntity wardenEntity) {
 		return this.modelMapper.map(wardenEntity, WardenDto.class);
 	}
+
+	
 
 }

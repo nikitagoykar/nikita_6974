@@ -25,6 +25,7 @@ public class StudentController {
 	@Autowired
 	private StudentService studentService;
 
+	//add student
 	@PostMapping("/hostel/{hostelId}/warden/{wardenId}/floor/{floorId}/room/{roomId}/student")
 	private ResponseEntity<StudentDto> createStuddent(@PathVariable int hostelId, @PathVariable int wardenId,
 			@PathVariable int floorId, @PathVariable int roomId, @RequestBody StudentDto studentDto)
@@ -33,23 +34,50 @@ public class StudentController {
 		return new ResponseEntity<StudentDto>(createdStudent, HttpStatus.CREATED);
 	}
 
+	//Fetch student record by studentId
 	@GetMapping("/student/{StudentId}")
 	private ResponseEntity<StudentDto> getStudentById(@PathVariable int studentId) {
 		StudentDto getStudent = this.studentService.getStudentById(studentId);
 		return new ResponseEntity<StudentDto>(getStudent, HttpStatus.OK);
 	}
 
+	//Fetch all student record 
 	@GetMapping("/student")
 	ResponseEntity<List<StudentDto>> createStudent() {
 		List<StudentDto> recivedAllStudents = this.studentService.getAllStudents();
 		return new ResponseEntity<List<StudentDto>>(recivedAllStudents, HttpStatus.OK);
 	}
-
+	//fetch student record by wardenId
+	@GetMapping("/students/{wardenId}")
+	ResponseEntity<List<StudentDto>> getAllStudentsByWardenId(@PathVariable int wardenId)
+	{
+		List<StudentDto> getAdmin = this.studentService.getAllStudentsBywardenId(wardenId);
+		return new  ResponseEntity<List<StudentDto>>(getAdmin,HttpStatus.OK);
+	}
+	
+	//fetch student record by floorId
+		@GetMapping("/studentss/{floorId}")
+		ResponseEntity<List<StudentDto>> getAllStudentsByFloorId(@PathVariable int floorId)
+		{
+			List<StudentDto> getFloor = this.studentService.getAllStudentsByFloorId(floorId);
+			return new  ResponseEntity<List<StudentDto>>(getFloor,HttpStatus.OK);
+		}
+		
+		//fetch student record by roomId
+		@GetMapping("/studentS/{roomId}")
+		ResponseEntity<List<StudentDto>> getAllStudentsByRoomId(@PathVariable int roomId)
+		{
+			List<StudentDto> getRoom = this.studentService.getAllStudentsByRoomId(roomId);
+			return new  ResponseEntity<List<StudentDto>>(getRoom,HttpStatus.OK);
+		}
+	
+//update student record by studentId
 	@PutMapping("/student/{studentId}")
 	ResponseEntity<StudentDto> updateFloorById(@RequestBody StudentDto StudentDto, @PathVariable int studentId) {
 		StudentDto updateStudent = this.studentService.updateStudentById(StudentDto, studentId);
 		return new ResponseEntity<StudentDto>(updateStudent, HttpStatus.OK);
 	}
+	//delete student record by studentId
 
 	@DeleteMapping("/student/{studentId}")
 	ResponseEntity<ApiResponce> deletestudent(@PathVariable int studentId) {
